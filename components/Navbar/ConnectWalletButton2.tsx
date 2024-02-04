@@ -33,7 +33,7 @@ export default function ConnectWalletButton() {
           setButtonText(connectedText);
         }
       } else {
-        setButtonText('Switch to sepolia');
+        setButtonText('Switch to mumbai');
       }
     }
   }, [connectedText, isConnected, isCorrectNetwork]);
