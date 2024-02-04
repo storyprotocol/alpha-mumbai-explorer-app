@@ -6,9 +6,7 @@ import SkeletonTable from '@/components/Skeletons/SkeletonTable';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AssetDetailCard, { Fallback as FallbackDetailsCard } from './AssetDetailCard';
 import AssetRelationshipTableWrapper from '@/components/views/Asset/AssetRelationshipTableWrapper';
-import IpOrgLicenseDataViewer from '@/components/views/Licenses';
-
-
+import LicenseDataViewer from './LicenseDataViewer';
 
 export default async function AssetDetailPage({
   params: { ipAssetId, ipOrgId },
@@ -19,12 +17,12 @@ export default async function AssetDetailPage({
 
   return (
     <div className="flex w-full ">
-      <div className="md:flex shrink-0 w-[176px] h-lvh border-r pt-[34px] hidden md">
+      <div className="md:flex shrink-0 w-[176px] h-vh pt-[34px] hidden bg-[rgb(253,253,253)]">
         <Link href="/" className="whitespace-nowrap  mx-auto">
           <img className="h-6 max-w-20" src="/story_logo.svg" alt="Story Protocol" />
         </Link>
       </div>
-      <div className="flex px-10 py-9 max-w-[1600px] flex-col items-left gap-6 mx-auto">
+      <div className="flex px-10 py-9 w-full max-w-[1600px] flex-col items-left gap-6 mx-auto">
         <div className="">
           <div className='flex flex-row gap-4 items-center mb-4'>
             <h1 className="text-2xl leading-2xl md:text-2xl font-bold leading-none">{ipAsset.name}</h1>
@@ -43,7 +41,7 @@ export default async function AssetDetailPage({
               </TabsList>
               <TabsContent value="licenses">
                 <Suspense fallback={<SkeletonTable />}>
-                  <IpOrgLicenseDataViewer ipAssetId={ipAssetId}  hardcoded />
+                  <LicenseDataViewer orgID={ipAsset.ipOrgId} />
                 </Suspense>
               </TabsContent>
               <TabsContent value="relationships">

@@ -1,5 +1,5 @@
-'use client'
-import React, { useState, useEffect } from 'react';
+'use client';
+import React, { useState, useEffect, Suspense } from 'react';
 import { cn } from '@/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -43,26 +43,32 @@ export const Fallback = () => (
 );
 
 type AssetDetailCardProps = {
-  ipAsset: IPAsset
-}
+  ipAsset: IPAsset;
+};
 type Author = {
-  name: string
-  portion: number
-}
+  name: string;
+  percentage: number;
+};
+type Tag = {
+  key: string;
+  value: string | number | boolean;
+};
 type MagmaMetaData = {
-  author: Author[]
-  description: string
-  mediaUrl: string
-  origin: string
-  originUrl: string
-}
+  authors: Author[];
+  description: string;
+  mediaUrl: string;
+  origin: string;
+  originUrl: string;
+  tags: Tag[];
+};
 export default function AssetDetailCard({ ipAsset }: AssetDetailCardProps) {
   const [assetInfo, setAssetInfo] = useState({
-    author: [],
+    authors: [],
     description: '',
     mediaUrl: '',
     origin: '',
-    originUrl: '#'
+    originUrl: '#',
+    tags: [],
   } as MagmaMetaData);
   useEffect(() => {
     if (ipAsset.mediaUrl) {
@@ -79,15 +85,16 @@ export default function AssetDetailCard({ ipAsset }: AssetDetailCardProps) {
         })
         .then((d) => {
           if (d === true) {
-            return
+            return;
           }
           setAssetInfo({
-            author: d.author || [],
+            authors: d.authors || [],
             description: d.description || '',
             mediaUrl: d.mediaUrl || '',
             origin: d.origin || '',
-            originUrl: d.originUrl || '#'
-          })
+            originUrl: d.originUrl || '#',
+            tags: d.tags || [],
+          });
         })
         .catch((error) => {
           console.error('Error:', error);
@@ -98,36 +105,53 @@ export default function AssetDetailCard({ ipAsset }: AssetDetailCardProps) {
     <div className="grid grid-cols-12 gap-6">
       <AssetDisplayComponent data={ipAsset} />
       <div className="flex h-full border rounded-xl col-span-12 xl:col-span-7">
-        <div className={cn('relative rounded-xl py-2 bg-[#FFFFFF] dark:bg-[#2C2B35] w-full')}>
+        <div className={cn('relative rounded-xl py-2 bg-[rgb(253,253,253)] dark:bg-[#2C2B35] w-full')}>
           <div className="flex items-center justify-between px-6 py-4">
             <h1 className="font-medium md:text-2xl">Details</h1>
           </div>
           <div className="border-t px-6 py-4 border-gray-200 dark:border-gray-900">
+            <Suspense fallback={<Fallback />}>
             <Row label="Name">
               <span className="truncate">{ipAsset.name}</span>
             </Row>
 
-            <Row label="Author(s)">
-              <div className='flex'>
-                {assetInfo.author.map((author, i) => <p key={`author_${i}_${author.name}`}>{`${author.name} ${author.portion}%`}</p>)}
+            <Row label={`Author${assetInfo.authors.length > 1 ? 's' : ''}`}>
+              <div className="flex flex-col">
+                {assetInfo.authors.length === 1 &&
+                  <p key={`author_0_${assetInfo.authors[0]?.name}`} className="text-[$444] font-normal">{assetInfo.authors[0]?.name}</p>
+                }
+                {assetInfo.authors.length > 1 && assetInfo.authors.map((author, i) => (
+                  <p key={`author_${i}_${author.name}`} className="text-[#444] font-normal mb-3">{`${author.name} (${author.percentage}%)`}</p>
+                ))}
               </div>
             </Row>
 
             <Row label="Description">
-              <p className="truncate" >{assetInfo.description}</p>
+              <p className="truncate">{assetInfo.description}</p>
             </Row>
 
             <Row label="Source">
-              <div>
-                <span className="truncate font-mono text-gray-500">{assetInfo.origin}</span>
-                <div className='text-white text-xs py-1 px-3 bg-[rgba(85,56,206,1)] rounded-full'><Link href={assetInfo.originUrl} >View Original</Link></div>
+              <div className="flex w-full">
+                <span className="truncate">{assetInfo.origin}</span>
+                <div className="w-[90px] leading-6 ml-3 text-white text-[11px] font-normal text-center bg-[rgba(85,56,206,1)] rounded-full">
+                  <Link target="_blank" href={assetInfo.originUrl}>View Original</Link>
+                </div>
               </div>
             </Row>
 
-            <Row label="AI Assisted">
-              <span className="truncate font-mono text-gray-500">No</span>
+            <Row label="tags">
+              <div className="flex overflow-x-auto">
+                {assetInfo.tags.map((tag, i) => (
+                  <div key={i} className="flex flex-shrink-0 flex-col w-[118px] bg-white content-center p-2 border mr-[6px] mb-2 rounded-xl">
+                    <p className="text-center text-[10.691px] text-[#444]">{tag.key}</p>
+                    <p className="text-center text-[10.691px] text-[#444] leading-">{tag.value}</p>
+                  </div>
+                ))}
+              </div>
             </Row>
 
+            </Suspense>
+            
           </div>
         </div>
       </div>
