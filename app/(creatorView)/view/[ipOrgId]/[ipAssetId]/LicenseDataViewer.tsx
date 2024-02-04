@@ -11,19 +11,19 @@ type License = {
 const getLicenseByOrgID = (id: string | undefined): License => {
   switch (id) {
     case '0x01d046141B0368B31C1e4a6AC43BD24AD1a21769':
-      break;
+      return {} as License
     case '0x588AE01213C3B30bB5F7EA2155260a5Ea575174c':
       // fall-through
     default:
-     return {
-      title: 'Non-Commercial License',
-      usage: 'License is valid for worldwide adaptation.',
-      scope: 'Global',
-      duration: 'License has no expiration date and continues indefinitely.',
-      durationType: 'Perpetual',
-      additional: 'Licensee can distribute the adapted movie to theaters, streaming platforms, and other distribution channels.',
-      additionalRightType: 'Distribution',
-    } as License;
+      return {
+        title: 'Non-Commercial License',
+        usage: 'License is valid for worldwide adaptation.',
+        scope: 'Global',
+        duration: 'License has no expiration date and continues indefinitely.',
+        durationType: 'Perpetual',
+        additional: 'Licensee can distribute the adapted movie to theaters, streaming platforms, and other distribution channels.',
+        additionalRightType: 'Distribution',
+      } as License;
   }
 }
 

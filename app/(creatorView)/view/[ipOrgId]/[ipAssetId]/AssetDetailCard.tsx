@@ -1,5 +1,4 @@
-'use client';
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { Suspense } from 'react';
 import { cn } from '@/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -42,9 +41,6 @@ export const Fallback = () => (
   </div>
 );
 
-type AssetDetailCardProps = {
-  ipAsset: IPAsset;
-};
 type Author = {
   name: string;
   percentage: number;
@@ -61,46 +57,101 @@ type MagmaMetaData = {
   originUrl: string;
   tags: Tag[];
 };
-export default function AssetDetailCard({ ipAsset }: AssetDetailCardProps) {
-  const [assetInfo, setAssetInfo] = useState({
+const AssetDetailComponent = async ({ ipAsset }: AssetDetailCardProps) => {
+  let assetInfo = {
     authors: [],
     description: '',
     mediaUrl: '',
     origin: '',
     originUrl: '#',
     tags: [],
-  } as MagmaMetaData);
-  useEffect(() => {
-    if (ipAsset.mediaUrl) {
-      fetch(ipAsset.mediaUrl)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          const contentType = response.headers.get('content-type');
-          if (contentType?.startsWith('image/')) {
-            return true;
-          }
-          return response.json();
-        })
-        .then((d) => {
-          if (d === true) {
-            return;
-          }
-          setAssetInfo({
-            authors: d.authors || [],
-            description: d.description || '',
-            mediaUrl: d.mediaUrl || '',
-            origin: d.origin || '',
-            originUrl: d.originUrl || '#',
-            tags: d.tags || [],
-          });
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-        });
+  } as MagmaMetaData;
+
+  if (ipAsset.mediaUrl) {
+    let resp;
+    try {
+      resp = await fetch(ipAsset.mediaUrl);
+      if (!resp.ok) {
+        throw new Error('Network response was not ok');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      throw error;
     }
-  }, [ipAsset.mediaUrl]);
+
+    const contentType = resp.headers.get('content-type');
+
+    if (contentType?.endsWith('/json')) {
+      const d = await resp.json();
+      assetInfo = {
+        authors: d.authors.sort((a: Author, b: Author) => b.percentage - a.percentage) || [],
+        description: d.description || '',
+        mediaUrl: d.mediaUrl || '',
+        origin: d.origin || '',
+        originUrl: d.originUrl || '#',
+        tags: d.tags || [],
+      };
+    }
+  }
+
+  return (
+    <>
+      <Row label="Name">
+        <span className="truncate">{ipAsset.name}</span>
+      </Row>
+
+      <Row label={`Author${assetInfo.authors.length > 1 ? 's' : ''}`}>
+        <div className="flex flex-col">
+          {assetInfo.authors.length === 1 && (
+            <p key={`author_0_${assetInfo.authors[0]?.name}`} className="text-[$444] font-normal">
+              {assetInfo.authors[0]?.name}
+            </p>
+          )}
+          {assetInfo.authors.length > 1 &&
+            assetInfo.authors.map((author, i) => (
+              <p
+                key={`author_${i}_${author.name}`}
+                className="text-[#444] font-normal mb-3"
+              >{`${author.name} (${author.percentage}%)`}</p>
+            ))}
+        </div>
+      </Row>
+
+      <Row label="Description">
+        <p className="truncate">{assetInfo.description}</p>
+      </Row>
+
+      <Row label="Source">
+        <div className="flex w-full">
+          <span className="truncate">{assetInfo.origin}</span>
+          <div className="w-[90px] leading-6 ml-3 text-white text-[11px] font-normal text-center bg-[rgba(85,56,206,1)] rounded-full">
+            <Link target="_blank" href={assetInfo.originUrl}>
+              View Original
+            </Link>
+          </div>
+        </div>
+      </Row>
+
+      <Row label="tags">
+        <div className="flex overflow-x-auto">
+          {assetInfo.tags.map((tag, i) => (
+            <div
+              key={i}
+              className="flex flex-shrink-0 flex-col w-[118px] bg-white content-center p-2 border mr-[6px] mb-2 rounded-xl"
+            >
+              <p className="text-center text-[10.691px] text-[#444]">{tag.key}</p>
+              <p className="text-center text-[10.691px] text-[#444] leading-">{tag.value}</p>
+            </div>
+          ))}
+        </div>
+      </Row>
+    </>
+  );
+};
+type AssetDetailCardProps = {
+  ipAsset: IPAsset;
+};
+export default function AssetDetailCard({ ipAsset }: AssetDetailCardProps) {
   return (
     <div className="grid grid-cols-12 gap-6">
       <AssetDisplayComponent data={ipAsset} />
@@ -111,47 +162,8 @@ export default function AssetDetailCard({ ipAsset }: AssetDetailCardProps) {
           </div>
           <div className="border-t px-6 py-4 border-gray-200 dark:border-gray-900">
             <Suspense fallback={<Fallback />}>
-            <Row label="Name">
-              <span className="truncate">{ipAsset.name}</span>
-            </Row>
-
-            <Row label={`Author${assetInfo.authors.length > 1 ? 's' : ''}`}>
-              <div className="flex flex-col">
-                {assetInfo.authors.length === 1 &&
-                  <p key={`author_0_${assetInfo.authors[0]?.name}`} className="text-[$444] font-normal">{assetInfo.authors[0]?.name}</p>
-                }
-                {assetInfo.authors.length > 1 && assetInfo.authors.map((author, i) => (
-                  <p key={`author_${i}_${author.name}`} className="text-[#444] font-normal mb-3">{`${author.name} (${author.percentage}%)`}</p>
-                ))}
-              </div>
-            </Row>
-
-            <Row label="Description">
-              <p className="truncate">{assetInfo.description}</p>
-            </Row>
-
-            <Row label="Source">
-              <div className="flex w-full">
-                <span className="truncate">{assetInfo.origin}</span>
-                <div className="w-[90px] leading-6 ml-3 text-white text-[11px] font-normal text-center bg-[rgba(85,56,206,1)] rounded-full">
-                  <Link target="_blank" href={assetInfo.originUrl}>View Original</Link>
-                </div>
-              </div>
-            </Row>
-
-            <Row label="tags">
-              <div className="flex overflow-x-auto">
-                {assetInfo.tags.map((tag, i) => (
-                  <div key={i} className="flex flex-shrink-0 flex-col w-[118px] bg-white content-center p-2 border mr-[6px] mb-2 rounded-xl">
-                    <p className="text-center text-[10.691px] text-[#444]">{tag.key}</p>
-                    <p className="text-center text-[10.691px] text-[#444] leading-">{tag.value}</p>
-                  </div>
-                ))}
-              </div>
-            </Row>
-
+              <AssetDetailComponent ipAsset={ipAsset} />
             </Suspense>
-            
           </div>
         </div>
       </div>

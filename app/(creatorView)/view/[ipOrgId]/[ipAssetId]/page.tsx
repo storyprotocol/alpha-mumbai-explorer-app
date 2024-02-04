@@ -5,11 +5,10 @@ import storyClient from '@/lib/SP';
 import SkeletonTable from '@/components/Skeletons/SkeletonTable';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AssetDetailCard, { Fallback as FallbackDetailsCard } from './AssetDetailCard';
-import AssetRelationshipTableWrapper from '@/components/views/Asset/AssetRelationshipTableWrapper';
 import LicenseDataViewer from './LicenseDataViewer';
 
 export default async function AssetDetailPage({
-  params: { ipAssetId, ipOrgId },
+  params: { ipAssetId },
 }: {
   params: { ipAssetId: string; ipOrgId: string };
 }) {
@@ -37,16 +36,10 @@ export default async function AssetDetailPage({
             <Tabs defaultValue="licenses" className="w-full">
               <TabsList>
                 <TabsTrigger value="licenses">Licenses</TabsTrigger>
-                <TabsTrigger value="relationships">Relationships</TabsTrigger>
               </TabsList>
               <TabsContent value="licenses">
                 <Suspense fallback={<SkeletonTable />}>
                   <LicenseDataViewer orgID={ipAsset.ipOrgId} />
-                </Suspense>
-              </TabsContent>
-              <TabsContent value="relationships">
-                <Suspense fallback={<SkeletonTable />}>
-                  <AssetRelationshipTableWrapper ipOrgId={ipOrgId} ipAssetId={ipAssetId} />
                 </Suspense>
               </TabsContent>
             </Tabs>
