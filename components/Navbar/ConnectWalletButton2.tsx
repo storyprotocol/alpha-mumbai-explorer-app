@@ -6,7 +6,7 @@ import { useAccount, useNetwork, useSignMessage } from 'wagmi';
 import ClientOnly from '../../utils/ClientOnly';
 import { useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { sepolia } from 'wagmi/chains';
+import { polygonMumbai } from 'wagmi/chains';
 import { getSignMessageRequest, verifySignature } from '@/lib/server/platform';
 
 export default function ConnectWalletButton() {
@@ -62,7 +62,7 @@ export default function ConnectWalletButton() {
   };
 
   useEffect(() => {
-    if (chain?.id === sepolia.id) {
+    if (chain?.id === polygonMumbai.id) {
       setIsCorrectNetwork(true);
     } else {
       setIsCorrectNetwork(false);

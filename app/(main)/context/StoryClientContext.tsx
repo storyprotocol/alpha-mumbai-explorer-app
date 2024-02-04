@@ -3,7 +3,8 @@
 import React, { createContext, useContext } from 'react';
 import { Client, ReadOnlyClient, StoryClient, StoryConfig, StoryReadOnlyConfig } from '@story-protocol/core-sdk';
 import { http } from 'viem';
-import { sepolia, useWalletClient } from 'wagmi';
+import { useWalletClient } from 'wagmi';
+import { polygonMumbai } from 'wagmi/chains';
 
 interface StoryClientContextType {
   client: ReadOnlyClient | Client;
@@ -28,7 +29,7 @@ export const StoryClientProvider = ({ children }: { children: React.ReactNode })
   // const { isConnected } = useAccount();
   if (walletClient) {
     const config = {
-      chain: sepolia,
+      chain: polygonMumbai,
       transport: http(process.env.RPC_PROVIDER_URL),
       account: walletClient!.account,
     } as StoryConfig;
@@ -36,7 +37,7 @@ export const StoryClientProvider = ({ children }: { children: React.ReactNode })
   }
 
   const readOnlyConfig = {
-    chain: sepolia,
+    chain: polygonMumbai,
     transport: http(process.env.RPC_PROVIDER_URL),
     ...(walletClient && { account: walletClient!.account }),
   } as StoryReadOnlyConfig;

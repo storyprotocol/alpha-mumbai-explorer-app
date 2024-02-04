@@ -2,7 +2,6 @@
 import { Client, ReadOnlyClient, StoryClient, StoryConfig, StoryReadOnlyConfig } from '@story-protocol/core-sdk';
 import { useWalletClient } from 'wagmi';
 import { custom, http } from 'viem';
-// import { Chain, sepolia } from 'viem/chains';
 
 type EthereumProvider = { request(): Promise<any> };
 
