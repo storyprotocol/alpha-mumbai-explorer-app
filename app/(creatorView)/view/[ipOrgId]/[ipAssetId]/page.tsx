@@ -53,7 +53,7 @@ export default async function AssetDetailPage({
           <img className="h-6 max-w-20" src="/story_logo.svg" alt="Story Protocol" />
         </Link>
       </div>
-      <div className="flex px-10 py-9 w-full max-w-[1600px] flex-col items-left gap-6 mx-auto">
+      <div className="flex px-10 py-9 w-full max-w-[1280px] flex-col items-left gap-6 mx-auto">
         <div className="">
           <div className='flex flex-row gap-4 items-center mb-4'>
             <h1 className="text-2xl leading-2xl md:text-2xl font-bold leading-none">{ipAsset.name}</h1>
