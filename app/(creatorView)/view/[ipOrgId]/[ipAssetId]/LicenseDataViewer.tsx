@@ -33,8 +33,8 @@ type LicenseDataViewerProps = {
 const LicenseDataViewer = ({ orgID }: LicenseDataViewerProps) => {
     const licenseData: License = getLicenseByOrgID(orgID);
     return <div className='border rounded-xl px-7 py-8 bg-[rgb(253,253,253)]'>
-      <h1 className='leading-8 mb-12 text-[26px] font-sans'>{licenseData.title}</h1>
-      <div>
+      <h1 className='leading-8 mb-12 text-xl sm:text-[26px] max-[360px]:text-[16px] max-[360px]:font-bold font-sans'>{licenseData.title}</h1>
+      <div className="" >
         <div className="flex leading-[153%]">
           <h2 className="flex w-32 text-[#444] text-sm font-bold">Usage Scope</h2><div className='sm:ml-28 ml-16 mb-12 w-96'><strong className="font-bold text-sm">{licenseData.scope}:</strong> <span>{licenseData.usage}</span></div>
         </div>
