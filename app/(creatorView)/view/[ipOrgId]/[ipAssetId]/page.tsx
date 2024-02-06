@@ -7,27 +7,25 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AssetDetailCard, { Fallback as FallbackDetailsCard } from './AssetDetailCard';
 import LicenseDataViewer from './LicenseDataViewer';
 
-import { Metadata } from 'next'
+import { Metadata } from 'next';
 
 type Params = {
-  ipAssetId: string
-  ipOrgId: string 
-}
+  ipAssetId: string;
+  ipOrgId: string;
+};
 type Props = {
-  params: Params
-}
+  params: Params;
+};
 
-export async function generateMetadata(
-  { params: { ipAssetId } }: Props
-): Promise<Metadata> {
-  const {ipAsset} = await storyClient.ipAsset.get({ ipAssetId });
+export async function generateMetadata({ params: { ipAssetId } }: Props): Promise<Metadata> {
+  const { ipAsset } = await storyClient.ipAsset.get({ ipAssetId });
   type MediaInfo = {
-    originUrl: string
-    description: string
-  }
+    originUrl: string;
+    description: string;
+  };
   const resp = await fetch(ipAsset.mediaUrl);
-  const result = await resp.json() as MediaInfo;
-  const {originUrl, description} = result
+  const result = (await resp.json()) as MediaInfo;
+  const { originUrl, description } = result;
 
   return {
     title: `Story Protocol - ${ipAsset.name}`,
@@ -36,28 +34,22 @@ export async function generateMetadata(
       description: description,
       images: [originUrl],
     },
-  }
+  };
 }
 
-export default async function AssetDetailPage({
-  params: { ipAssetId },
-}: {
-  params: Params;
-}) {
-  const {ipAsset} = await storyClient.ipAsset.get({ ipAssetId });
+export default async function AssetDetailPage({ params: { ipAssetId } }: { params: Params }) {
+  const { ipAsset } = await storyClient.ipAsset.get({ ipAssetId });
 
   return (
-    <div className="flex w-full ">
-      <div className="md:flex shrink-0 w-[176px] h-vh pt-[34px] hidden bg-[rgb(253,253,253)]">
-        <Link href="/" className="whitespace-nowrap  mx-auto">
+    <div className="flex flex-col w-full ">
+      <div className="flex shrink-0 pt-6 bg-[rgb(253,253,253)]">
+        <Link href="/" className="whitespace-nowrap ml-8">
           <img className="h-6 max-w-20" src="/story_logo.svg" alt="Story Protocol" />
         </Link>
       </div>
       <div className="flex px-10 py-9 w-full max-w-[1280px] flex-col items-left gap-6 mx-auto">
-        <div className="">
-          <div className='flex flex-row gap-4 items-center mb-4'>
-            <h1 className="text-2xl leading-2xl md:text-2xl font-bold leading-none">{ipAsset.name}</h1>
-          </div>
+        <div className="flex flex-row gap-4 items-center mb-3">
+          <h1 className="text-[26px] leading-2xl font-bold leading-none">{ipAsset.name}</h1>
         </div>
         <Suspense fallback={<FallbackDetailsCard />}>
           <AssetDetailCard ipAsset={ipAsset} />

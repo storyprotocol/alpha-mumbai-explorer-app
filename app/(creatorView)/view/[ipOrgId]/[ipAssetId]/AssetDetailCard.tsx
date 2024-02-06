@@ -9,7 +9,7 @@ import Link from 'next/link';
 const Row = ({ label, children }: { label: string; children: React.ReactNode }) => {
   return (
     <div className="py-4 sm:grid sm:grid-cols-5 sm:gap-4">
-      <dt className="text-sm font-medium leading-6 text-gray-900 dark:text-gray-300">{label}</dt>
+      <dt className="text-sm font-bold leading-6 text-[#444] dark:text-gray-300">{label}</dt>
       <dd className="relative w-full truncate mt-1 flex items-center space-x-2 text-sm leading-6 text-gray-700 dark:text-gray-200 sm:col-span-4 sm:mt-0">
         {children}
       </dd>
@@ -137,7 +137,7 @@ const AssetDetailComponent = async ({ ipAsset }: AssetDetailCardProps) => {
           {assetInfo.tags.map((tag, i) => (
             <div
               key={i}
-              className="flex flex-shrink-0 flex-col w-[118px] bg-white content-center p-2 border mr-[6px] mb-2 rounded-xl"
+              className="flex flex-shrink-0 flex-col w-[118px] bg-white content-center px-2 py-[7px] border mr-[6px] mb-2 rounded-xl"
             >
               <p className="text-center text-[10.691px] text-[#444]">{tag.key}</p>
               <p className="text-center text-[10.691px] text-[#444] leading-">{tag.value}</p>
@@ -158,7 +158,7 @@ export default function AssetDetailCard({ ipAsset }: AssetDetailCardProps) {
       <div className="flex h-full border rounded-xl col-span-12 xl:col-span-7">
         <div className={cn('relative rounded-xl py-2 bg-[rgb(253,253,253)] dark:bg-[#2C2B35] w-full')}>
           <div className="flex items-center justify-between px-6 py-4">
-            <h1 className="font-medium md:text-2xl">Details</h1>
+            <h1 className="font-medium md:text-xl">Details</h1>
           </div>
           <div className="border-t px-6 py-4 border-gray-200 dark:border-gray-900">
             <Suspense fallback={<Fallback />}>
