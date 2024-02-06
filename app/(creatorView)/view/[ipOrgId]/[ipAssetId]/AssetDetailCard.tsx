@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { cn } from '@/utils';
 import { Skeleton } from '@/components/ui/skeleton';
-
+import { addHTTPSPrefix } from '@/utils/urlUtils';
 import { IPAsset } from '@story-protocol/core-sdk';
 import AssetDisplayComponent from './AssetDisplayComponent';
 import Link from 'next/link';
@@ -125,7 +125,7 @@ const AssetDetailComponent = async ({ ipAsset }: AssetDetailCardProps) => {
         <div className="flex w-full">
           <span className="truncate">{assetInfo.origin}</span>
           <div className="w-[90px] leading-6 ml-3 text-white text-[11px] font-normal text-center bg-[rgba(85,56,206,1)] rounded-full">
-            <Link target="_blank" href={assetInfo.originUrl}>
+            <Link target="_blank" href={addHTTPSPrefix(assetInfo.originUrl)}>
               View Original
             </Link>
           </div>

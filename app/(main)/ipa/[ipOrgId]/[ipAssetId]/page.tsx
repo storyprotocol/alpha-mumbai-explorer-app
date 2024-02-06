@@ -3,7 +3,7 @@ import { Suspense } from 'react';
 import SkeletonTable from '@/components/Skeletons/SkeletonTable';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TransactionTableWrapper from '@/components/views/Transactions/TransactionTableWrapper';
-
+import storyClient from '@/lib/SP';
 import AssetDetailCard, { Fallback as FallbackDetailsCard } from './AssetDetailCard';
 import AssetBreadcrumbs, { Fallback as FallbackBreadcrumbs } from './AssetBreadcrumbs';
 import LicenseReadAccordion from '@/app/(main)/admin/LicenseReadAccordion';
@@ -15,6 +15,37 @@ import RelationshipWriteAccordion from '@/app/(main)/admin/RelationshipWriteAcco
 
 export const revalidate = 60;
 export const fetchCache = 'force-no-store';
+
+import { Metadata } from 'next';
+import { addIPFSGateway } from '@/utils/urlUtils';
+
+type Params = {
+  ipAssetId: string;
+  ipOrgId: string;
+};
+type Props = {
+  params: Params;
+};
+
+export async function generateMetadata({ params: { ipAssetId } }: Props): Promise<Metadata> {
+  const { ipAsset } = await storyClient.ipAsset.get({ ipAssetId });
+  type MediaInfo = {
+    mediaUrl: string;
+    description: string;
+  };
+  const resp = await fetch(ipAsset.mediaUrl);
+  const result = (await resp.json()) as MediaInfo;
+  const { mediaUrl, description } = result;
+
+  return {
+    title: `Story Protocol - ${ipAsset.name}`,
+    openGraph: {
+      title: `Story Protocol - ${ipAsset.name}`,
+      description: description,
+      images: [addIPFSGateway(mediaUrl)],
+    },
+  };
+}
 
 export default function AssetDetailPage({
   params: { ipAssetId, ipOrgId },
