@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { PuzzlePieceIcon } from '@heroicons/react/24/outline';
 import AddressComponent from '../snippets/AddressComponent';
 import { getRoundedTime } from '@/utils';
+import { convertToPreviewUrl } from '@/utils/urlUtils';
 
 export default function AssetCard({ data }: { data: IPAsset }) {
   const [imageUrl, setImageUrl] = React.useState<string | null>(null);
@@ -27,7 +28,7 @@ export default function AssetCard({ data }: { data: IPAsset }) {
           setImageUrl(data.mediaUrl);
         } else {
           // Step 2: Access property values from the JavaScript object
-          const imageURI = d.image; // Replace 'propertyName' with the actual property name in your JSON data
+          const imageURI = convertToPreviewUrl(d.mediaUrl); // Replace 'propertyName' with the actual property name in your JSON data
           console.log('imageURI', imageURI);
           setImageUrl(imageURI);
         }

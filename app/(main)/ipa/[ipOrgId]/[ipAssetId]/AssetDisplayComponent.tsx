@@ -4,6 +4,7 @@ import { IPAsset } from '@story-protocol/core-sdk';
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { getRoundedTime } from '@/utils';
+import { convertToPreviewUrl } from '@/utils/urlUtils';
 
 export default function AssetDisplayComponent({ data }: { data: IPAsset }) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -24,7 +25,7 @@ export default function AssetDisplayComponent({ data }: { data: IPAsset }) {
           setImageUrl(data.mediaUrl);
         } else {
           // Step 2: Access property values from the JavaScript object
-          const imageURI = d.image; // Replace 'propertyName' with the actual property name in your JSON data
+          const imageURI = convertToPreviewUrl(d.mediaUrl); // Replace 'propertyName' with the actual property name in your JSON data
           console.log('imageURI', imageURI);
           setImageUrl(imageURI);
         }

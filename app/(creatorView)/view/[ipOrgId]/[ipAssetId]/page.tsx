@@ -1,105 +1,67 @@
 import { Suspense } from 'react';
+import storyClient from '@/lib/SP';
 
 import SkeletonTable from '@/components/Skeletons/SkeletonTable';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import TransactionTableWrapper from '@/components/views/Transactions/TransactionTableWrapper';
-
 import AssetDetailCard, { Fallback as FallbackDetailsCard } from './AssetDetailCard';
-import AssetBreadcrumbs, { Fallback as FallbackBreadcrumbs } from './AssetBreadcrumbs';
-import LicenseReadAccordion from '@/app/(main)/admin/LicenseReadAccordion';
-import AssetRelationshipTableWrapper from '@/components/views/Asset/AssetRelationshipTableWrapper';
-import IpOrgLicenseDataViewer from '@/components/views/Licenses';
-import CreateIpaBoundLicenseWriteAccordion from '@/app/(main)/admin/CreateIpaBoundLicenseWriteAccordion';
-import { CreateLicenseRequest } from '@story-protocol/core-sdk';
-import RelationshipWriteAccordion from '@/app/(main)/admin/RelationshipWriteAccordion';
+import LicenseDataViewer from './LicenseDataViewer';
 
-export const revalidate = 60;
-export const fetchCache = 'force-no-store';
+import { Metadata } from 'next';
+import { convertToPreviewUrl } from '@/utils/urlUtils';
 
+type Params = {
+  ipAssetId: string;
+  ipOrgId: string;
+};
+type Props = {
+  params: Params;
+};
 
-export default function AssetDetailPage({
-  params: { ipAssetId, ipOrgId },
-}: {
-  params: { ipAssetId: string; ipOrgId: string };
-}) {
-  const defaultIpAssetValues = {
-    ipAssetId,
-    ipOrgId,
+export async function generateMetadata({ params: { ipAssetId } }: Props): Promise<Metadata> {
+  const { ipAsset } = await storyClient.ipAsset.get({ ipAssetId });
+  type MediaInfo = {
+    mediaUrl: string;
+    description: string;
   };
+  const resp = await fetch(ipAsset.mediaUrl);
+  const result = (await resp.json()) as MediaInfo;
+  const { mediaUrl, description } = result;
 
-  const defaultRegisterRelationshipValues = {
-    ...defaultIpAssetValues,
-    relationshipType: '',
-    srcContract: process.env.IP_ASSET_REGISTRY_CONTRACT,
-    srcTokenId: ipAssetId,
-  };
-
-  const defaultCreateIpaBoundLicenseValues: CreateLicenseRequest = {
-    ...defaultIpAssetValues,
-    ipaId: ipAssetId,
-    parentLicenseId: '',
-    params: [],
-    preHookData: [],
-    postHookData: [],
-    txOptions: {
-      waitForTransaction: true,
+  return {
+    title: `Story Protocol - ${ipAsset.name}`,
+    openGraph: {
+      title: `Story Protocol - ${ipAsset.name}`,
+      description: description,
+      images: [convertToPreviewUrl(mediaUrl)],
     },
   };
+}
+
+export default async function AssetDetailPage({ params: { ipAssetId } }: { params: Params }) {
+  const { ipAsset } = await storyClient.ipAsset.get({ ipAssetId });
 
   return (
-    <div className="w-full px-4 md:px-8 max-w-[1600px] mx-auto">
-      <div className="flex flex-col items-left gap-6 my-6">
-        <div className="">
-          <div className='flex flex-row gap-4 items-center mb-4'>
-            <h1 className="text-xl md:text-4xl font-semibold leading-none">IP Asset Detail</h1>
-          </div>
-          <Suspense fallback={<FallbackBreadcrumbs />}>
-            <AssetBreadcrumbs ipAssetId={ipAssetId} ipOrgId={ipOrgId} />
-          </Suspense>
+    <div className="flex flex-col w-full ">
+      <div className="flex shrink-0 pt-6">
+        <img className="ml-8 h-6 max-w-20" src="/story_logo.svg" alt="Story Protocol" />
+      </div>
+      <div className="flex px-10 py-9 w-full max-w-[1280px] flex-col items-left gap-6 mx-auto">
+        <div className="flex flex-row gap-4 items-center mb-3">
+          <h1 className="text-[26px] leading-2xl font-bold leading-none">{ipAsset.name}</h1>
         </div>
-
-        {/* <div className="grid grid-cols-12 gap-2"> */}
-        {/* <div className="flex h-52 md:h-72 xl:h-full col-span-12 xl:col-span-5 rounded-xl bg-indigo-100 overflow-hidden justify-center items-center">
-            <PuzzlePieceIcon className="w-20 h-20 text-indigo-500" />
-          </div> */}
-        {/* <div className="flex h-full  col-span-12 xl:col-span-7"> */}
         <Suspense fallback={<FallbackDetailsCard />}>
-          <AssetDetailCard ipAssetId={ipAssetId} ipOrgId={ipOrgId} />
+          <AssetDetailCard ipAsset={ipAsset} />
         </Suspense>
-        {/* </div> */}
-        {/* </div> */}
 
-        <div className="grid grid-cols-12 gap-2">
+        <div className="grid grid-cols-12 gap-6">
           <div className="flex col-span-12">
-            <Tabs defaultValue="tx" className="w-full">
+            <Tabs defaultValue="licenses" className="w-full">
               <TabsList>
-                <TabsTrigger value="tx">TX</TabsTrigger>
                 <TabsTrigger value="licenses">Licenses</TabsTrigger>
-                <TabsTrigger value="relationships">Relationships</TabsTrigger>
-                <TabsTrigger value="actions">Actions</TabsTrigger>
               </TabsList>
-              <TabsContent value="tx">
-                <Suspense fallback={<SkeletonTable />}>
-                  <TransactionTableWrapper ipOrgId={ipOrgId} ipAssetId={ipAssetId} />
-                </Suspense>
-              </TabsContent>
-              <TabsContent value="relationships">
-                <Suspense fallback={<SkeletonTable />}>
-                  <AssetRelationshipTableWrapper ipOrgId={ipOrgId} ipAssetId={ipAssetId} />
-                </Suspense>
-              </TabsContent>
               <TabsContent value="licenses">
                 <Suspense fallback={<SkeletonTable />}>
-                  <IpOrgLicenseDataViewer ipAssetId={ipAssetId} />
-                </Suspense>
-              </TabsContent>
-              <TabsContent value="actions">
-                <Suspense fallback={<SkeletonTable />}>
-                  <div className="flex flex-col gap-4">
-                    <RelationshipWriteAccordion defaultValues={defaultRegisterRelationshipValues} />
-                    <LicenseReadAccordion defaultValues={defaultIpAssetValues} />
-                    <CreateIpaBoundLicenseWriteAccordion defaultValues={defaultCreateIpaBoundLicenseValues} />
-                  </div>
+                  <LicenseDataViewer orgID={ipAsset.ipOrgId} />
                 </Suspense>
               </TabsContent>
             </Tabs>

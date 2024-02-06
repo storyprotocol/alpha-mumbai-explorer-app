@@ -1,9 +1,10 @@
 import { Suspense } from 'react';
+import { Metadata } from 'next';
 
 import SkeletonTable from '@/components/Skeletons/SkeletonTable';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TransactionTableWrapper from '@/components/views/Transactions/TransactionTableWrapper';
-
+import storyClient from '@/lib/SP';
 import AssetDetailCard, { Fallback as FallbackDetailsCard } from './AssetDetailCard';
 import AssetBreadcrumbs, { Fallback as FallbackBreadcrumbs } from './AssetBreadcrumbs';
 import LicenseReadAccordion from '@/app/(main)/admin/LicenseReadAccordion';
@@ -12,9 +13,39 @@ import IpOrgLicenseDataViewer from '@/components/views/Licenses';
 import CreateIpaBoundLicenseWriteAccordion from '@/app/(main)/admin/CreateIpaBoundLicenseWriteAccordion';
 import { CreateLicenseRequest } from '@story-protocol/core-sdk';
 import RelationshipWriteAccordion from '@/app/(main)/admin/RelationshipWriteAccordion';
+import { convertToPreviewUrl } from '@/utils/urlUtils';
 
 export const revalidate = 60;
 export const fetchCache = 'force-no-store';
+
+
+type Params = {
+  ipAssetId: string;
+  ipOrgId: string;
+};
+type Props = {
+  params: Params;
+};
+
+export async function generateMetadata({ params: { ipAssetId } }: Props): Promise<Metadata> {
+  const { ipAsset } = await storyClient.ipAsset.get({ ipAssetId });
+  type MediaInfo = {
+    mediaUrl: string;
+    description: string;
+  };
+  const resp = await fetch(ipAsset.mediaUrl);
+  const result = (await resp.json()) as MediaInfo;
+  const { mediaUrl, description } = result;
+
+  return {
+    title: `Story Protocol - ${ipAsset.name}`,
+    openGraph: {
+      title: `Story Protocol - ${ipAsset.name}`,
+      description: description,
+      images: [convertToPreviewUrl(mediaUrl)],
+    },
+  };
+}
 
 export default function AssetDetailPage({
   params: { ipAssetId, ipOrgId },
