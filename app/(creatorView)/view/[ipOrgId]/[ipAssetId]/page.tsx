@@ -7,7 +7,7 @@ import AssetDetailCard, { Fallback as FallbackDetailsCard } from './AssetDetailC
 import LicenseDataViewer from './LicenseDataViewer';
 
 import { Metadata } from 'next';
-import { addIPFSGateway } from '@/utils/urlUtils';
+import { convertToPreviewUrl } from '@/utils/urlUtils';
 
 type Params = {
   ipAssetId: string;
@@ -32,7 +32,7 @@ export async function generateMetadata({ params: { ipAssetId } }: Props): Promis
     openGraph: {
       title: `Story Protocol - ${ipAsset.name}`,
       description: description,
-      images: [addIPFSGateway(mediaUrl)],
+      images: [convertToPreviewUrl(mediaUrl)],
     },
   };
 }

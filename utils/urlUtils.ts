@@ -12,15 +12,15 @@ export function addHTTPSPrefix(url: Url): Url {
   return url;
 }
 
-export function addIPFSGateway(url: string): string {
+export function convertToPreviewUrl(url: string): string {
   const arweaveScheme = /^ar:\/\//i;
   const ipfsScheme = /^ipfs:\/\//i;
   const arweaveGateway = process.env.ARWEAVE_GATEWAY || DEFAULT_ARWEAVE_GATE_WAY;
   const ipfsGateway = process.env.IPFS_GATEWAY || DEFAULT_IFPS_GATEWAY;
-  if (arweaveScheme.test(url.trim())) {
+  if (arweaveScheme.test(url?.trim())) {
     return url.replace(arweaveScheme, arweaveGateway);
   }
-  if (ipfsScheme.test(url.trim())) {
+  if (ipfsScheme.test(url?.trim())) {
     return url.replace(ipfsScheme, ipfsGateway);
   }
   return url;

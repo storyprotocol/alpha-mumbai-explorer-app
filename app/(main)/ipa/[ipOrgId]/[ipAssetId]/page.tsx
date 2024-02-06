@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import { Metadata } from 'next';
 
 import SkeletonTable from '@/components/Skeletons/SkeletonTable';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -12,12 +13,11 @@ import IpOrgLicenseDataViewer from '@/components/views/Licenses';
 import CreateIpaBoundLicenseWriteAccordion from '@/app/(main)/admin/CreateIpaBoundLicenseWriteAccordion';
 import { CreateLicenseRequest } from '@story-protocol/core-sdk';
 import RelationshipWriteAccordion from '@/app/(main)/admin/RelationshipWriteAccordion';
+import { convertToPreviewUrl } from '@/utils/urlUtils';
 
 export const revalidate = 60;
 export const fetchCache = 'force-no-store';
 
-import { Metadata } from 'next';
-import { addIPFSGateway } from '@/utils/urlUtils';
 
 type Params = {
   ipAssetId: string;
@@ -42,7 +42,7 @@ export async function generateMetadata({ params: { ipAssetId } }: Props): Promis
     openGraph: {
       title: `Story Protocol - ${ipAsset.name}`,
       description: description,
-      images: [addIPFSGateway(mediaUrl)],
+      images: [convertToPreviewUrl(mediaUrl)],
     },
   };
 }

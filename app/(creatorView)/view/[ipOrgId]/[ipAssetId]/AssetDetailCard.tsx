@@ -1,10 +1,10 @@
 import React, { Suspense } from 'react';
+import Link from 'next/link';
 import { cn } from '@/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { addHTTPSPrefix } from '@/utils/urlUtils';
 import { IPAsset } from '@story-protocol/core-sdk';
 import AssetDisplayComponent from './AssetDisplayComponent';
-import Link from 'next/link';
 
 const Row = ({ label, children }: { label: string; children: React.ReactNode }) => {
   return (
@@ -84,7 +84,7 @@ const AssetDetailComponent = async ({ ipAsset }: AssetDetailCardProps) => {
     if (contentType?.endsWith('/json')) {
       const d = await resp.json();
       assetInfo = {
-        authors: d.authors.sort((a: Author, b: Author) => b.percentage - a.percentage) || [],
+        authors: d.authors?.sort((a: Author, b: Author) => b.percentage - a.percentage) || [],
         description: d.description || '',
         mediaUrl: d.mediaUrl || '',
         origin: d.origin || '',
