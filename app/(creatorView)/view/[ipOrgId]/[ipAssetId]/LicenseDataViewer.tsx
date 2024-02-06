@@ -43,21 +43,21 @@ const LicenseDataViewer = ({ orgID }: LicenseDataViewerProps) => {
           <h2 className="flex w-32 mb-3 text-[#444] text-sm font-bold">Usage Scope</h2>
           <div className="md:ml-16 ml-0 mb-10 max-w-96">
             <strong className="font-bold text-sm">{licenseData.scope}:</strong>
-            <span>{licenseData.usage}</span>
+            <span> {licenseData.usage}</span>
           </div>
         </div>
         <div className="flex md:flex-row flex-col leading-[153%]">
           <h2 className="flex w-32 mb-3 text-[#444] text-sm font-bold">License Duration</h2>
           <div className="md:ml-16 ml-0 mb-10 max-w-96">
             <strong className="font-bold text-sm">{licenseData.durationType}:</strong>
-            <span>{licenseData.duration}</span>
+            <span> {licenseData.duration}</span>
           </div>
         </div>
         <div className="flex md:flex-row flex-col leading-[153%]">
           <h2 className="flex w-32 mb-3 text-[#444] text-sm font-bold">Additional Rights</h2>
           <div className="md:ml-16 ml-0 mb-10 max-w-96">
             <strong className="font-bold text-sm">{licenseData.additionalRightType}:</strong>
-            <span>{licenseData.additional}</span>
+            <span> {licenseData.additional}</span>
           </div>
         </div>
       </div>
