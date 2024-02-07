@@ -21,29 +21,21 @@ const licenseTemplateMap: LicenseMap = {
       'Let the world build on the creation. This license allows for endless free remixing while tracking all the uses of the work and giving you full credit.',
     canDo: [
       'Remix this work',
-      'Include this work in their own work(s)',
-      'Credit you appropriately',
-      'Distribute their remix anywhere',
+      'Include this in your own work(s)',
+      'Must credit the creator appropriately',
+      'Distribute your remix anywhere',
     ],
-    cantDo: [
-      'Resell this original work',
-      'Commercialize the remix',
-      'Claim credit for the remix (as an original work)',
-    ],
+    cantDo: ['Resell this original work', 'Commercialize the remix', 'Claim credit for your remix as an original work'],
   },
   [COMMERCIAL_LICENSE_ID]: {
     title: 'Commercial Activity',
     description:
       'Retain control over use of the work, while allowing anyone to appropriately use the work for economic terms you set',
-    canDo: [
-      'Purchase the right to use the creation (for a set price)',
-      'Get credit as the creator',
-      'Display / publish the work in any medium',
-    ],
+    canDo: ['Purchase the right to use', 'Credit the creator', 'Display or publish the work in any medium'],
     cantDo: [
-      'Claim the work as their own',
-      'Create remixes (or other compositions based on the work)',
-      'Resell the work',
+      'Claim the work as your own',
+      'Create remixes (or other compositions based on this work)',
+      'Resell this work',
     ],
   },
 };
