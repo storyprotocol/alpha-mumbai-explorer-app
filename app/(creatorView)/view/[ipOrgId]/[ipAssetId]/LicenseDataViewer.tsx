@@ -18,7 +18,7 @@ const licenseTemplateMap: LicenseMap = {
   [NON_COMMERCIAL_LICENSE_ID]: {
     title: 'Social Remixing',
     description:
-      'Let the world build on your creation. This license allows for endless free remixing while tracking all the uses of your work and giving you full credit.',
+      'Let the world build on the creation. This license allows for endless free remixing while tracking all the uses of the work and giving you full credit.',
     canDo: [
       'Remix this work',
       'Include this work in their own work(s)',
@@ -26,7 +26,7 @@ const licenseTemplateMap: LicenseMap = {
       'Distribute their remix anywhere',
     ],
     cantDo: [
-      'Resell your original work',
+      'Resell this original work',
       'Commercialize the remix',
       'Claim credit for the remix (as an original work)',
     ],
@@ -34,16 +34,16 @@ const licenseTemplateMap: LicenseMap = {
   [COMMERCIAL_LICENSE_ID]: {
     title: 'Commercial Activity',
     description:
-      'Retain control over use of your work, while allowing anyone to appropriately use the work for economic terms you set',
+      'Retain control over use of the work, while allowing anyone to appropriately use the work for economic terms you set',
     canDo: [
-      'Purchase the right to use your creation (for a price you set)',
-      'Credit you as a creator',
+      'Purchase the right to use the creation (for a set price)',
+      'Get credit as the creator',
       'Display / publish the work in any medium',
     ],
     cantDo: [
-      'Claim your work as their own',
-      'Create remixes (or other compositions based on your work)',
-      'Resell your work',
+      'Claim the work as their own',
+      'Create remixes (or other compositions based on the work)',
+      'Resell the work',
     ],
   },
 };
