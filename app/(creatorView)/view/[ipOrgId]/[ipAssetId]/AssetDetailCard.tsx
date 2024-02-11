@@ -5,6 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { addHTTPSPrefix } from '@/utils/urlUtils';
 import { IPAsset } from '@story-protocol/core-sdk';
 import AssetDisplayComponent from './AssetDisplayComponent';
+import { MagmaMetaData } from './types';
 
 const Row = ({ label, children }: { label: string; children: React.ReactNode }) => {
   return (
@@ -41,63 +42,11 @@ export const Fallback = () => (
   </div>
 );
 
-type Author = {
-  name: string;
-  percentage: number;
-};
-type Tag = {
-  key: string;
-  value: string | number | boolean;
-};
-type MagmaMetaData = {
-  authors: Author[];
-  description: string;
-  mediaUrl: string;
-  origin: string;
-  originUrl: string;
-  tags: Tag[];
-};
-const AssetDetailComponent = async ({ ipAsset }: AssetDetailCardProps) => {
-  let assetInfo = {
-    authors: [],
-    description: '',
-    mediaUrl: '',
-    origin: '',
-    originUrl: '#',
-    tags: [],
-  } as MagmaMetaData;
-
-  if (ipAsset.mediaUrl) {
-    let resp;
-    try {
-      resp = await fetch(ipAsset.mediaUrl);
-      if (!resp.ok) {
-        throw new Error('Network response was not ok');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      throw error;
-    }
-
-    const contentType = resp.headers.get('content-type');
-
-    if (contentType?.endsWith('/json')) {
-      const d = await resp.json();
-      assetInfo = {
-        authors: d.authors?.sort((a: Author, b: Author) => b.percentage - a.percentage) || [],
-        description: d.description || '',
-        mediaUrl: d.mediaUrl || '',
-        origin: d.origin || '',
-        originUrl: d.originUrl || '#',
-        tags: d.tags || [],
-      };
-    }
-  }
-
+const AssetDetailComponent = async ({ assetInfo }: AssetDetailCardProps) => {
   return (
     <>
       <Row label="Name">
-        <span className="truncate">{ipAsset.name}</span>
+        <span className="truncate">{assetInfo.artworkName}</span>
       </Row>
 
       <Row label={`Author${assetInfo.authors.length > 1 ? 's' : ''}`}>
@@ -140,7 +89,7 @@ const AssetDetailComponent = async ({ ipAsset }: AssetDetailCardProps) => {
               className="flex flex-shrink-0 flex-col w-[118px] bg-white content-center px-2 py-[7px] border mr-[6px] mb-2 rounded-xl"
             >
               <p className="text-center text-[10.691px] text-[#444]">{tag.key}</p>
-              <p className="text-center text-[10.691px] text-[#444] leading-">{tag.value}</p>
+              <p className="text-center text-[10.691px] text-[#444] capitalize">{tag.value.toString()}</p>
             </div>
           ))}
         </div>
@@ -150,11 +99,12 @@ const AssetDetailComponent = async ({ ipAsset }: AssetDetailCardProps) => {
 };
 type AssetDetailCardProps = {
   ipAsset: IPAsset;
+  assetInfo: MagmaMetaData;
 };
-export default function AssetDetailCard({ ipAsset }: AssetDetailCardProps) {
+export default function AssetDetailCard({ ipAsset, assetInfo }: AssetDetailCardProps) {
   return (
     <div className="grid grid-cols-12 gap-6">
-      <AssetDisplayComponent data={ipAsset} />
+      <AssetDisplayComponent assetInfo={assetInfo} />
       <div className="flex h-full border rounded-xl col-span-12 xl:col-span-7">
         <div className={cn('relative rounded-xl py-2 bg-[rgb(253,253,253)] dark:bg-[#2C2B35] w-full')}>
           <div className="flex items-center justify-between px-6 py-4">
@@ -162,7 +112,7 @@ export default function AssetDetailCard({ ipAsset }: AssetDetailCardProps) {
           </div>
           <div className="border-t px-6 py-4 border-gray-200 dark:border-gray-900">
             <Suspense fallback={<Fallback />}>
-              <AssetDetailComponent ipAsset={ipAsset} />
+              <AssetDetailComponent ipAsset={ipAsset} assetInfo={assetInfo} />
             </Suspense>
           </div>
         </div>
