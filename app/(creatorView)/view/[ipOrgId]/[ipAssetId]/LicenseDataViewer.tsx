@@ -58,8 +58,8 @@ const LicenseDataViewer = ({ orgID }: LicenseDataViewerProps) => {
           <h2 className="flex mb-3 text-[#444] lg:text-lg text-md font-medium">Others may:</h2>
           <ul>
             {licenseData.canDo.map((item, index) => (
-              <li key={index} className="text-sm flex flex-row gap-1 items-center mb-1">
-                <CheckIcon className="w-5 h-5 text-green-400" />
+              <li key={index} className="text-sm flex flex-row gap-1 items-start mb-1">
+                <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0" />
                 {item}
               </li>
             ))}
@@ -69,34 +69,13 @@ const LicenseDataViewer = ({ orgID }: LicenseDataViewerProps) => {
           <h2 className="flex mb-3 text-[#444] lg:text-lg text-md font-medium">Others may not:</h2>
           <ul>
             {licenseData.cantDo.map((item, index) => (
-              <li key={index} className="text-sm flex flex-row gap-1 items-center mb-1">
-                <XMarkIcon className="w-5 h-5 text-red-400" />
+              <li key={index} className="text-sm flex flex-row gap-1 items-start mb-1">
+                <XMarkIcon className="w-5 h-5 text-red-400 flex-shrink-0" />
                 {item}
               </li>
             ))}
           </ul>
         </div>
-        {/* <div className="flex md:flex-row flex-col leading-[153%]">
-          <h2 className="flex w-32 mb-3 text-[#444] text-sm font-bold">Usage Scope</h2>
-          <div className="md:ml-16 ml-0 mb-10 max-w-96">
-            <strong className="font-bold text-sm">{licenseData.scope}:</strong>
-            <span> {licenseData.usage}</span>
-          </div>
-        </div>
-        <div className="flex md:flex-row flex-col leading-[153%]">
-          <h2 className="flex w-32 mb-3 text-[#444] text-sm font-bold">License Duration</h2>
-          <div className="md:ml-16 ml-0 mb-10 max-w-96">
-            <strong className="font-bold text-sm">{licenseData.durationType}:</strong>
-            <span> {licenseData.duration}</span>
-          </div>
-        </div>
-        <div className="flex md:flex-row flex-col leading-[153%]">
-          <h2 className="flex w-32 mb-3 text-[#444] text-sm font-bold">Additional Rights</h2>
-          <div className="md:ml-16 ml-0 mb-10 max-w-96">
-            <strong className="font-bold text-sm">{licenseData.additionalRightType}:</strong>
-            <span> {licenseData.additional}</span>
-          </div>
-        </div> */}
       </div>
     </div>
   );

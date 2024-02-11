@@ -8,14 +8,7 @@ import LicenseDataViewer from './LicenseDataViewer';
 
 import { Metadata } from 'next';
 import { convertToPreviewUrl } from '@/utils/urlUtils';
-
-type Params = {
-  ipAssetId: string;
-  ipOrgId: string;
-};
-type Props = {
-  params: Params;
-};
+import { Params, MagmaMetaData, Props, Author } from './types';
 
 export async function generateMetadata({ params: { ipAssetId } }: Props): Promise<Metadata> {
   const { ipAsset } = await storyClient.ipAsset.get({ ipAssetId });
@@ -40,6 +33,51 @@ export async function generateMetadata({ params: { ipAssetId } }: Props): Promis
 export default async function AssetDetailPage({ params: { ipAssetId } }: { params: Params }) {
   const { ipAsset } = await storyClient.ipAsset.get({ ipAssetId });
 
+  let assetInfo = {
+    artworkName: '',
+    description: '',
+    authors: [],
+    licenseParam: {
+      isCommercial: false,
+    },
+    mediaUrl: '',
+    origin: '',
+    originUrl: '#',
+    tags: [],
+  } as MagmaMetaData;
+
+  if (ipAsset.mediaUrl) {
+    let resp;
+    try {
+      resp = await fetch(ipAsset.mediaUrl);
+      if (!resp.ok) {
+        throw new Error('Network response was not ok');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      throw error;
+    }
+
+    const contentType = resp.headers.get('content-type');
+
+    if (contentType?.endsWith('/json')) {
+      const d = await resp.json();
+      console.log({ d });
+      assetInfo = {
+        artworkName: d.artworkName || '',
+        description: d.description || '',
+        authors: d.authors?.sort((a: Author, b: Author) => b.percentage - a.percentage) || [],
+        licenseParam: {
+          isCommercial: d.licenseParam?.isCommercial || false,
+        },
+        mediaUrl: d.mediaUrl || '',
+        origin: d.origin || '',
+        originUrl: d.originUrl || '#',
+        tags: d.tags || [],
+      };
+    }
+  }
+
   return (
     <div className="flex flex-col w-full ">
       <div className="flex shrink-0 pt-6">
@@ -47,10 +85,10 @@ export default async function AssetDetailPage({ params: { ipAssetId } }: { param
       </div>
       <div className="flex px-10 py-9 w-full max-w-[1280px] flex-col items-left gap-6 mx-auto">
         <div className="flex flex-row gap-4 items-center mb-3">
-          <h1 className="text-[26px] leading-2xl font-bold leading-none">{ipAsset.name}</h1>
+          <h1 className="text-[26px] leading-2xl font-bold leading-none">{assetInfo.artworkName}</h1>
         </div>
         <Suspense fallback={<FallbackDetailsCard />}>
-          <AssetDetailCard ipAsset={ipAsset} />
+          <AssetDetailCard ipAsset={ipAsset} assetInfo={assetInfo} />
         </Suspense>
 
         <div className="grid grid-cols-12 gap-6">
