@@ -1,3 +1,10 @@
+import { IPAsset } from '@story-protocol/core-sdk';
+
+export type AssetDetailCardProps = {
+  ipAsset: IPAsset;
+  assetInfo: MagmaMetaData;
+};
+
 export type Params = {
   ipAssetId: string;
   ipOrgId: string;
@@ -15,7 +22,7 @@ export type Tag = {
   value: string | number | boolean;
 };
 export type MagmaMetaData = {
-  artworkName: string;
+  artworkName?: string;
   description: string;
   authors: Author[];
   licenseParam: {

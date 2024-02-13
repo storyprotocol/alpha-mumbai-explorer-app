@@ -3,16 +3,16 @@ import React from 'react';
 import Image from 'next/image';
 import { PuzzlePieceIcon } from '@heroicons/react/24/outline';
 import { getRoundedTime } from '@/utils';
-import { MagmaMetaData } from './types';
+import { AssetDetailCardProps } from './types';
 
-export default function AssetDisplayComponent({ assetInfo }: { assetInfo: MagmaMetaData }) {
+export default function AssetDisplayComponent({ ipAsset, assetInfo }: AssetDetailCardProps) {
   return (
     <div className="flex h-52 md:h-72 xl:h-full col-span-12 xl:col-span-5 rounded-xl bg-indigo-100 overflow-hidden justify-center items-center">
       {assetInfo ? (
         <Image
           width={700}
           height={600}
-          alt={assetInfo.artworkName}
+          alt={ipAsset.name}
           loading="lazy"
           decoding="async"
           data-nimg="1"

@@ -38,6 +38,8 @@ export default function AssetCard({ data }: { data: IPAsset }) {
       });
   }
 
+  console.log({ imageUrl });
+
   return (
     <div className="w-full bg-white rounded-2xl overflow-hidden border-2 border-slate-100 hover:border-indigo-500 hover:shadow-md">
       <span data-state="closed">

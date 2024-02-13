@@ -3,9 +3,8 @@ import Link from 'next/link';
 import { cn } from '@/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { addHTTPSPrefix } from '@/utils/urlUtils';
-import { IPAsset } from '@story-protocol/core-sdk';
 import AssetDisplayComponent from './AssetDisplayComponent';
-import { MagmaMetaData } from './types';
+import { AssetDetailCardProps } from './types';
 
 const Row = ({ label, children }: { label: string; children: React.ReactNode }) => {
   return (
@@ -42,11 +41,11 @@ export const Fallback = () => (
   </div>
 );
 
-const AssetDetailComponent = async ({ assetInfo }: AssetDetailCardProps) => {
+const AssetDetailComponent = async ({ ipAsset, assetInfo }: AssetDetailCardProps) => {
   return (
     <>
       <Row label="Name">
-        <span className="truncate">{assetInfo.artworkName}</span>
+        <span className="truncate">{ipAsset.name}</span>
       </Row>
 
       <Row label={`Author${assetInfo.authors.length > 1 ? 's' : ''}`}>
@@ -97,14 +96,12 @@ const AssetDetailComponent = async ({ assetInfo }: AssetDetailCardProps) => {
     </>
   );
 };
-type AssetDetailCardProps = {
-  ipAsset: IPAsset;
-  assetInfo: MagmaMetaData;
-};
+
 export default function AssetDetailCard({ ipAsset, assetInfo }: AssetDetailCardProps) {
+  // console.log({ ipAsset, assetInfo });
   return (
     <div className="grid grid-cols-12 gap-6">
-      <AssetDisplayComponent assetInfo={assetInfo} />
+      <AssetDisplayComponent ipAsset={ipAsset} assetInfo={assetInfo} />
       <div className="flex h-full border rounded-xl col-span-12 xl:col-span-7">
         <div className={cn('relative rounded-xl py-2 bg-[rgb(253,253,253)] dark:bg-[#2C2B35] w-full')}>
           <div className="flex items-center justify-between px-6 py-4">

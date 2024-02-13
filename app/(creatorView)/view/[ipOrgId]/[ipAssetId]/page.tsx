@@ -34,7 +34,6 @@ export default async function AssetDetailPage({ params: { ipAssetId } }: { param
   const { ipAsset } = await storyClient.ipAsset.get({ ipAssetId });
 
   let assetInfo = {
-    artworkName: '',
     description: '',
     authors: [],
     licenseParam: {
@@ -60,17 +59,17 @@ export default async function AssetDetailPage({ params: { ipAssetId } }: { param
 
     const contentType = resp.headers.get('content-type');
 
-    if (contentType?.endsWith('/json')) {
+    if (contentType?.includes('json')) {
       const d = await resp.json();
-      console.log({ d });
+      console.log('TEST', { d });
       assetInfo = {
-        artworkName: d.artworkName || '',
+        artworkName: d.artworkName || ipAsset.name || '',
         description: d.description || '',
         authors: d.authors?.sort((a: Author, b: Author) => b.percentage - a.percentage) || [],
         licenseParam: {
           isCommercial: d.licenseParam?.isCommercial || false,
         },
-        mediaUrl: d.mediaUrl || '',
+        mediaUrl: convertToPreviewUrl(d.mediaUrl) || '',
         origin: d.origin || '',
         originUrl: d.originUrl || '#',
         tags: d.tags || [],
@@ -85,7 +84,7 @@ export default async function AssetDetailPage({ params: { ipAssetId } }: { param
       </div>
       <div className="flex px-10 py-9 w-full max-w-[1280px] flex-col items-left gap-6 mx-auto">
         <div className="flex flex-row gap-4 items-center mb-3">
-          <h1 className="text-[26px] leading-2xl font-bold leading-none">{assetInfo.artworkName}</h1>
+          <h1 className="text-[26px] leading-2xl font-bold leading-none">{ipAsset.name}</h1>
         </div>
         <Suspense fallback={<FallbackDetailsCard />}>
           <AssetDetailCard ipAsset={ipAsset} assetInfo={assetInfo} />
