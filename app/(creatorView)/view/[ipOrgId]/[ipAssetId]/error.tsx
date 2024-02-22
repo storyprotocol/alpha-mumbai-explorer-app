@@ -5,7 +5,12 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { PropagateLoader } from 'react-spinners';
 
-const MESSAGE_LIST = ['Fetching asset details', 'Loading metadata information'];
+const MESSAGE_LIST = [
+  'Fetching asset details',
+  'Loading metadata information',
+  'Fetching asset details',
+  'Loading metadata information',
+];
 export default function Error({ error }: { error: Error & { digest?: string } }) {
   const router = useRouter();
   const MAX_RETRIES = 3;
